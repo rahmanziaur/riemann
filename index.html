@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Riemann Hypothesis</title>
+<meta name="description" content="An illustrated, step-by-step story of the Riemann Hypothesis: from prime numbers to the zeros of the zeta function, with interactive charts.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root{--ink:#111;--muted:#555;--faint:#888;--rule:#e6e2dc;--rust:#a8321e;--teal:#0f6e56;--blue:#2a5fa8;--tint:#faf7f3}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font:18px/1.7 'KaTeX_Main','Latin Modern Roman','CMU Serif',Georgia,serif;-webkit-font-smoothing:antialiased}
+main{max-width:800px;margin:0 auto;padding:0 16px 64px}
+h1{font-size:2.4rem;font-weight:400;line-height:1.15;margin:0 0 .3rem;letter-spacing:-.01em}
+h2{font-size:1.35rem;font-weight:400;margin:0}
+h3{font-size:1.1rem;font-weight:700;margin:1.6rem 0 .4rem}
+p{margin:.7rem 0}
+a{color:var(--blue)}
+b.r,.r{color:var(--rust)} b.t,.t{color:var(--teal)} b.bl,.bl{color:var(--blue)}
+.small{font-size:.86rem;color:var(--muted)}
+header.hero{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:28px;align-items:center;padding:48px 0 24px;border-bottom:1px solid var(--rule)}
+.hero .kicker{font-variant:small-caps;letter-spacing:.08em;color:var(--rust);font-size:1rem}
+.hero .lede{font-size:1.1rem;color:#333}
+.hero figure{margin:0;text-align:center}
+.hero img{width:100%;max-width:210px;height:auto;display:block;margin:0 auto}
+.hero figcaption{font-size:.8rem;color:var(--muted);line-height:1.4;margin-top:6px}
+.claim{border-left:3px solid var(--rust);padding:.6rem 1rem;margin:1.2rem 0;background:var(--tint);border-radius:0}
+.claim p{margin:.3rem 0}
+nav.toc{margin:1.6rem 0;font-size:.95rem}
+nav.toc ol{columns:2;column-gap:32px;padding-left:1.4rem;margin:.4rem 0}
+nav.toc a{color:var(--ink);text-decoration:none;border-bottom:1px dotted var(--faint)}
+nav.toc a:hover{color:var(--rust)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 .6rem}
+button{font:inherit;font-size:.85rem;padding:4px 12px;border:1px solid #bbb;background:#fff;border-radius:6px;cursor:pointer;color:var(--ink)}
+button:hover{border-color:var(--rust);color:var(--rust)}
+button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+details.step{border-top:1px solid var(--rule);padding:.2rem 0}
+details.step:last-of-type{border-bottom:1px solid var(--rule)}
+summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:14px;padding:14px 0}
+summary::-webkit-details-marker{display:none}
+summary .num{font-size:.85rem;color:var(--rust);font-variant:small-caps;letter-spacing:.06em;min-width:56px}
+summary h2{flex:1}
+summary .chev{color:var(--faint);transition:transform .2s;font-size:.9rem}
+details[open] summary .chev{transform:rotate(90deg)}
+.body{padding:0 0 1.4rem}
+.eq{overflow-x:auto;overflow-y:hidden;margin:.6rem 0}
+figure.chart{margin:1.4rem 0 1.6rem}
+.ctrl{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:.92rem;margin-bottom:8px}
+.ctrl label{color:var(--muted)}
+.ctrl input[type=range]{flex:1;min-width:150px;accent-color:var(--rust)}
+.ctrl output{font-variant-numeric:tabular-nums;min-width:80px;text-align:right}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:8px 0 10px}
+.tile{background:var(--tint);border-radius:8px;padding:.55rem .8rem}
+.tile .k{font-size:.8rem;color:var(--muted);line-height:1.3}
+.tile .v{font-size:1.35rem;font-variant-numeric:tabular-nums lining-nums}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:var(--muted);margin:4px 0}
+.legend>span{display:flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:16px;border-top:2px solid}
+.sw.dash{border-top-style:dashed}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%}
+.plot{position:relative;width:100%;height:320px}
+figcaption.cap{font-size:.88rem;color:var(--muted);line-height:1.55;margin-top:8px}
+figcaption.cap b{color:var(--ink)}
+.static{margin:1.2rem auto;max-width:480px}
+.static svg{width:100%;height:auto;display:block}
+.static svg text{font-family:inherit;fill:#111;font-size:13px}
+table.vals{border-collapse:collapse;font-size:.92rem;margin:.8rem 0;width:100%}
+table.vals th,table.vals td{border-bottom:1px solid var(--rule);padding:5px 8px;text-align:left}
+table.vals th{font-weight:400;color:var(--muted);font-variant:small-caps;letter-spacing:.04em}
+.calc{border:1px solid var(--rule);border-radius:10px;padding:14px 16px;margin:1.2rem 0}
+.calc .row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+.calc label{display:flex;flex-direction:column;font-size:.85rem;color:var(--muted)}
+.calc input[type=number]{font:inherit;width:130px;padding:4px 8px;border:1px solid #bbb;border-radius:6px}
+.calc .err{color:#b00020;font-size:.85rem;min-height:1.2em;margin-top:4px}
+.calc .out{font-size:1.05rem;margin-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.numline{display:block;width:100%;max-width:520px;height:auto;margin:6px auto 0}
+.timeline{list-style:none;padding:0;margin:1rem 0;position:relative}
+.timeline:before{content:"";position:absolute;left:96px;top:6px;bottom:6px;width:2px;background:var(--rust)}
+.timeline li{display:grid;grid-template-columns:84px 26px minmax(0,1fr);align-items:start}
+.timeline .yr{text-align:right;font-variant-numeric:tabular-nums;padding-top:7px;font-weight:700;font-size:.95rem}
+.timeline .mk{width:12px;height:12px;border-radius:50%;background:var(--rust);margin:12px 0 0 7px;position:relative;z-index:1;box-shadow:0 0 0 3px #fff}
+.timeline li.ai .mk{background:var(--blue)}
+.timeline li.claimed .mk{background:#fff;border:2px solid var(--rust)}
+.timeline button.ev{all:unset;cursor:pointer;display:block;padding:5px 6px;border-radius:6px;width:100%;box-sizing:border-box}
+.timeline button.ev:hover,.timeline button.ev:focus-visible{background:var(--tint)}
+.timeline button.ev:focus-visible{outline:2px solid var(--blue)}
+.timeline .more{font-size:.9rem;color:#333;padding:0 6px 10px;line-height:1.55}
+.badge{display:inline-block;font-size:.72rem;padding:0 7px;border-radius:10px;margin-left:6px;vertical-align:2px;font-variant:small-caps;letter-spacing:.05em}
+.badge.rev{background:#fbeae5;color:#7a2414}
+.badge.ai{background:#e6eef9;color:#1d4580}
+footer{border-top:1px solid var(--rule);margin-top:2rem;padding-top:1rem;font-size:.85rem;color:var(--muted)}
+footer ol{padding-left:1.2rem}
+@media (max-width:640px){
+  body{font-size:17px}
+  header.hero{grid-template-columns:1fr;padding-top:28px}
+  .hero figure{order:-1}
+  .hero img{max-width:150px}
+  h1{font-size:1.9rem}
+  nav.toc ol{columns:1}
+  .plot{height:280px}
+  .timeline:before{left:68px}
+  .timeline li{grid-template-columns:58px 22px minmax(0,1fr)}
+  .timeline .yr{font-size:.85rem}
+  .timeline .mk{margin-left:5px}
+}
+</style>
+</head>
+<body>
+<main>
+
+<header class="hero">
+  <div>
+    <div class="kicker">A story in ten steps</div>
+    <h1>The Riemann Hypothesis</h1>
+    <p class="lede">How a question about <b class="r">counting prime numbers</b> turned into a question about <b class="bl">where a single function equals zero</b>, and why mathematicians have chased it for more than 165 years.</p>
+    <p class="small">Every chart is interactive: drag the sliders, hover over the points. Each step can be collapsed or expanded by clicking its title.</p>
+  </div>
+  <figure>
+    <img src="https://raw.githubusercontent.com/rahmanziaur/riemann/refs/heads/main/riemann.png" alt="Engraved portrait of Bernhard Riemann, bearded, wearing round spectacles and a bow tie" onerror="this.parentElement.style.display='none'">
+    <figcaption>Bernhard Riemann (1826–1866). His only paper on number theory, 8 pages long, set out the problem in 1859.</figcaption>
+  </figure>
+</header>
+
+<div class="claim">
+  <p><b>The hypothesis in one sentence.</b> Every non-trivial zero of the Riemann zeta function \(\zeta(s)\) has real part exactly \(\tfrac12\).</p>
+  <p class="small">By the end of the page, every word of that sentence will make sense, and you will see why it says the primes are spread out as evenly as they could possibly be.</p>
+</div>
+
+<nav class="toc" aria-label="Contents">
+  <div class="toolbar"><button id="expandAll">Expand all</button><button id="collapseAll">Collapse all</button></div>
+  <ol>
+    <li><a href="#s1">The atoms of arithmetic</a></li>
+    <li><a href="#s2">Counting primes: Gauss's guess</a></li>
+    <li><a href="#s3">Euler's golden key</a></li>
+    <li><a href="#s4">Riemann's leap into the complex plane</a></li>
+    <li><a href="#s5">The trivial zeros</a></li>
+    <li><a href="#s6">The non-trivial zeros</a></li>
+    <li><a href="#s7">The hypothesis and its mirror</a></li>
+    <li><a href="#s8">Why zeros control the primes</a></li>
+    <li><a href="#s9">From Hilbert to a million dollars</a></li>
+    <li><a href="#s10">Where things stand today</a></li>
+  </ol>
+</nav>
+
+<!-- STEP 1 -->
+<details class="step" id="s1" open>
+<summary><span class="num">Step 1</span><h2>The atoms of arithmetic</h2><span class="chev" aria-hidden="true">▶</span></summary>
+<div class="body">
+<p>A <b class="r">prime number</b> is a whole number greater than 1 that can only be divided evenly by 1 and itself: \(2, 3, 5, 7, 11, 13, \dots\). Every other whole number can be built by multiplying primes together, in exactly one way:</p>
+<div class="eq">\[ 360 = 2^3 \times 3^2 \times 5, \qquad 1001 = 7 \times 11 \times 13. \]</div>
+<p>So primes are the <i>atoms</i> of arithmetic. More than 2,000 years ago Euclid proved that there are <b>infinitely many</b> of them: multiply any finite list of primes together and add 1, and the result has a prime factor that is not on your list.</p>
+<p>The hard part is not whether primes exist but <b>where</b> they are. Up close they look random. After 89 comes a gap of 8 (the next prime is 97). Yet 101 and 103 are only 2 apart: a <i>twin prime</i> pair. The chart below shows every prime \(p\) up to your chosen limit, plotted at the size of the gap to the next prime.</p>
+
+<figure class="chart">
+  <div class="ctrl"><label for="gN">Primes up to</label><input type="range" id="gN" min="1000" max="100000" step="1000" value="20000"><output id="gNo">20,000</output></div>
+  <div class="tiles">
+    <div class="tile"><div class="k">Primes found</div><div class="v" id="gT1">–</div></div>
+    <div class="tile"><div class="k">Twin-prime pairs (gap 2)</div><div class="v" id="gT2">–</div></div>
+    <div class="tile"><div class="k">Largest gap</div><div class="v" id="gT3">–</div></div>
+  </div>
+  <div class="legend"><span><i class="dot" style="background:#a8321e"></i>Gap after prime \(p\)</span><span><i class="sw dash" style="border-color:#8a8780"></i>\(\ln p\), the average gap</span></div>
+  <div class="plot"><canvas id="cGaps" role="img" aria-label="Scatter of each prime against the gap to the next prime; gaps scatter widely but trend upward with ln p."></canvas></div>
+  <figcaption class="cap"><b>Figure 1. Gaps between consecutive primes.</b> Each dot is one prime. The gaps look chaotic, but they line up in rows (every gap after 3 is even, so the rows are 2, 4, 6, …) and on average they grow slowly, like the natural logarithm \(\ln p\) (dashed). Hover over a dot to see the prime and its neighbour. Drag the slider: the cloud stretches, but the dashed trend still runs through its middle. Our question is how close to that trend the primes stay.</figcaption>
+</figure>
+</div>
+</details>
+
+<!-- STEP 2 -->
+<details class="step" id="s2" open>
+<summary><span class="num">Step 2</span><h2>Counting primes: Gauss's guess</h2><span class="chev" aria-hidden="true">▶</span></summary>
+<div class="body">
+<p>Around 1792 a 15-year-old <b>Carl Friedrich Gauss</b> counted primes from tables in blocks of a thousand and noticed a pattern: near a number \(x\), roughly <b>one number in \(\ln x\)</b> is prime. Write \(\pi(x)\) for the number of primes up to \(x\) (this \(\pi\) has nothing to do with 3.14159…). Gauss's guess, now the <b class="r">Prime Number Theorem</b>, says</p>
+<div class="eq">\[ \pi(x) \;\approx\; \frac{x}{\ln x}, \qquad\text{and even better}\qquad \pi(x) \;\approx\; \operatorname{li}(x) = \int_0^x \frac{dt}{\ln t}. \]</div>
+<table class="vals">
+  <thead><tr><th>\(x\)</th><th>\(\pi(x)\)</th><th>\(x/\ln x\)</th><th>\(\operatorname{li}(x)\)</th></tr></thead>
+  <tbody>
+    <tr><td>10</td><td>4</td><td>4.3</td><td>6.2</td></tr>
+    <tr><td>1,000</td><td>168</td><td>144.8</td><td>177.6</td></tr>
+    <tr><td>100,000</td><td>9,592</td><td>8,685.9</td><td>9,629.8</td></tr>
+    <tr><td>10<sup>10</sup></td><td>455,052,511</td><td>434,294,482</td><td>455,055,614</td></tr>
+  </tbody>
+</table>
+<p>It took over a century to prove: <b>Hadamard</b> and <b>de la Vallée Poussin</b> did it in 1896, and both used the tool that Riemann had invented. Notice how close \(\operatorname{li}(x)\) is: at \(10^{10}\) it is off by only about 3,100 out of 455 million. <b>How large can that error get?</b> That is the real question behind the Riemann Hypothesis.</p>
+
+<figure class="chart">
+  <div class="ctrl"><label for="pN">Count up to</label><input type="range" id="pN" min="1000" max="100000" step="1000" value="100000"><output id="pNo">100,000</output><label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="pLog" checked>log scale</label></div>
+  <div class="tiles">
+    <div class="tile"><div class="k">\(\pi(N)\), true count</div><div class="v r" id="pT1">–</div></div>
+    <div class="tile"><div class="k">\(N/\ln N\)</div><div class="v" id="pT2">–</div></div>
+    <div class="tile"><div class="k">\(\operatorname{li}(N)\)</div><div class="v" id="pT3">–</div></div>
+  </div>
+  <div class="legend"><span><i class="sw" style="border-color:#a8321e"></i>\(\pi(x)\), prime counting function</span><span><i class="sw dash" style="border-color:#0f6e56"></i>\(x/\ln x\)</span><span><i class="sw dash" style="border-color:#2a5fa8;border-top-style:dotted"></i>\(\operatorname{li}(x)\), logarithmic integral</span></div>
+  <div class="plot"><canvas id="cPi" role="img" aria-label="Prime counting function compared with x over ln x and li(x); li(x) hugs pi(x) closely while x over ln x falls below it."></canvas></div>
+  <figcaption class="cap"><b>Figure 2. The prime counting function \(\pi(x)\) against Gauss's approximations.</b> The red staircase climbs by one at every prime. \(x/\ln x\) (green) always lags a little behind, while \(\operatorname{li}(x)\) (blue, dotted) almost sits on top of it. Turn off log scale to see the curves at their true size, and hover to read exact values. Labelled dots mark \(\pi(10)=4\), \(\pi(100)=25\), and so on.</figcaption>
+</figure>
+</div>
+</details>
+
+<!-- STEP 3 -->
+<details class="step" id="s3" open>
+<summary><span class="num">Step 3</span><h2>Euler's golden key</h2><span class="chev" aria-hidden="true">▶</span></summary>
+<div class="body">
+<p>In 1737 <b>Leonhard Euler</b> studied a simple infinite sum, now called the <b class="r">zeta function</b>:</p>
+<div class="eq">\[ \zeta(s) \;=\; \sum_{n=1}^{\infty}\frac{1}{n^{s}} \;=\; 1+\frac{1}{2^s}+\frac{1}{3^s}+\frac{1}{4^s}+\cdots \]</div>
+<p>He then discovered something astonishing: the same number can be written as a product over the <b>primes alone</b>:</p>
+<div class="eq">\[ \sum_{n=1}^{\infty}\frac{1}{n^{s}} \;=\; \prod_{p\ \text{prime}} \frac{1}{1-p^{-s}} \;=\; \frac{1}{1-2^{-s}}\cdot\frac{1}{1-3^{-s}}\cdot\frac{1}{1-5^{-s}}\cdots \]</div>
+<p>This <b>Euler product</b> is the golden key: the left side knows nothing about primes, the right side knows nothing else. It works because every whole number is a unique product of primes (Step 1). Some cases:</p>
+<ul>
+  <li>\(s=2\): \(\;1+\tfrac14+\tfrac19+\cdots = \dfrac{\pi^2}{6}\approx 1.6449\) (Euler's solution of the famous <i>Basel problem</i>).</li>
+  <li>\(s=4\): \(\;\zeta(4)=\dfrac{\pi^4}{90}\approx 1.0823\).</li>
+  <li>\(s=1\): the <i>harmonic series</i> \(1+\tfrac12+\tfrac13+\cdots\) grows without limit. Since the product must blow up too, there must be <b>infinitely many primes</b>: Euclid's theorem again, by a completely new route.</li>
+</ul>
+
+<figure class="chart">
+  <div class="ctrl"><label for="eS">Exponent \(s\)</label><input type="range" id="eS" min="0.5" max="4" step="0.05" value="2"><output id="eSo">2.00</output></div>
+  <div class="tiles">
+    <div class="tile"><div class="k">Sum of first 300 terms</div><div class="v r" id="eT1">–</div></div>
+    <div class="tile"><div class="k">Product over primes ≤ 300</div><div class="v bl" id="eT2">–</div></div>
+    <div class="tile"><div class="k">Exact \(\zeta(s)\)</div><div class="v" id="eT3">–</div></div>
+  </div>
+  <div class="legend"><span><i class="sw" style="border-color:#a8321e"></i>Partial sum over integers \(n\le N\)</span><span><i class="sw" style="border-color:#2a5fa8"></i>Partial product over primes \(p\le N\)</span><span><i class="sw dash" style="border-color:#8a8780"></i>Limit \(\zeta(s)\)</span></div>
+  <div class="plot"><canvas id="cEuler" role="img" aria-label="Partial sums over integers and partial products over primes, both approaching zeta of s when s is greater than 1."></canvas></div>
+  <figcaption class="cap" id="eCap"><b>Figure 3. Two roads to the same number.</b> The red curve adds \(1/n^s\) one integer at a time; the blue curve multiplies the prime factors \(1/(1-p^{-s})\) one prime at a time. For \(s>1\) both settle on the same value \(\zeta(s)\) (dashed). Slide \(s\) down to 1 or below: both curves now climb forever. The sum stops making sense there, and Riemann's idea in Step 4 is how to go further.</figcaption>
+</figure>
+</div>
+</details>
+
+<!-- STEP 4 -->
+<details class="step" id="s4" open>
+<summary><span class="num">Step 4</span><h2>Riemann's leap into the complex plane</h2><span class="chev" aria-hidden="true">▶</span></summary>
+<div class="body">
+<p>In November 1859, newly elected to the Berlin Academy, Riemann submitted an 8-page report, <i>On the Number of Primes Less Than a Given Magnitude</i>. His bold move was to feed the zeta function <b class="bl">complex numbers</b></p>
+<div class="eq">\[ s = \sigma + i t, \qquad i^2=-1, \]</div>
+<p>where \(\sigma\) is the <i>real part</i> (east–west on a map) and \(t\) the <i>imaginary part</i> (north–south). Raising \(n\) to a complex power splits into a size and a rotation:</p>
+<div class="eq">\[ n^{-s} \;=\; \underbrace{n^{-\sigma}}_{\text{size}}\;\underbrace{e^{-it\ln n}}_{\text{rotation}} . \]</div>
+<p>The sum still converges only when \(\sigma>1\). Riemann showed that \(\zeta\) nevertheless has a unique smooth extension to the whole plane (except at \(s=1\)), a process called <b>analytic continuation</b>. One concrete version, valid for \(\sigma>0\), uses an alternating sum that converges where the original does not:</p>
+<div class="eq">\[ \zeta(s) \;=\; \frac{1}{1-2^{1-s}}\left(1-\frac{1}{2^s}+\frac{1}{3^s}-\frac{1}{4^s}+\cdots\right). \]</div>
+<p>He then found a remarkable symmetry, the <b class="r">functional equation</b>, which ties the value at \(s\) to the value at its mirror image \(1-s\):</p>
+<div class="eq">\[ \zeta(s) \;=\; 2^{s}\,\pi^{s-1}\,\sin\!\Big(\frac{\pi s}{2}\Big)\,\Gamma(1-s)\,\zeta(1-s). \]</div>
+<p>Here \(\Gamma\) is the gamma function, which extends factorials: \(\Gamma(n)=(n-1)!\). The mirror \(s \leftrightarrow 1-s\) reflects the plane across the vertical line \(\sigma=\tfrac12\). Remember that line.</p>
+</div>
+</details>
+
+<!-- STEP 5 -->
+<details class="step" id="s5" open>
+<summary><span class="num">Step 5</span><h2>The trivial zeros</h2><span class="chev" aria-hidden="true">▶</span></summary>
+<div class="body">
+<p>Look at the factor \(\sin(\pi s/2)\) in the functional equation. A sine is zero at every multiple of \(\pi\), so when \(s = -2, -4, -6, \dots\) the whole right-hand side vanishes:</p>
+<div class="eq">\[ \zeta(-2)=\zeta(-4)=\zeta(-6)=\cdots=0. \]</div>
+<p>These are the <b class="t">trivial zeros</b>: easy to find, completely understood, and lined up on the negative real axis. Between them \(\zeta\) takes some surprising values (computed by the extended function, not by the divergent sum):</p>
+<table class="vals">
+  <thead><tr><th>\(s\)</th><th>\(\zeta(s)\)</th><th>Note</th></tr></thead>
+  <tbody>
+    <tr><td>\(0\)</td><td>\(-\tfrac12\)</td><td></td></tr>
+    <tr><td>\(-1\)</td><td>\(-\tfrac1{12}\)</td><td>the value behind the folklore "\(1+2+3+\cdots = -\tfrac1{12}\)", which is not a literal sum</td></tr>
+    <tr><td>\(-2\)</td><td>\(0\)</td><td class="t">trivial zero</td></tr>
+    <tr><td>\(-3\)</td><td>\(\tfrac1{120}\)</td><td></td></tr>
+    <tr><td>\(-4\)</td><td>\(0\)</td><td class="t">trivial zero</td></tr>
+  </tbody>
+</table>
+
+<figure class="chart">
+  <div class="ctrl"><label for="tL">Show \(s\) from</label><input type="range" id="tL" min="4" max="40" step="2" value="12"><output id="tLo">−12 to 0.8</output></div>
+  <div class="tiles">
+    <div class="tile"><div class="k">Trivial zeros in view</div><div class="v t" id="tT1">–</div></div>
+    <div class="tile"><div class="k">Largest \(|\zeta(s)|\) in view</div><div class="v" id="tT2">–</div></div>
+    <div class="tile"><div class="k">\(\zeta(-1)\)</div><div class="v" id="tT3">–</div></div>
+  </div>
+  <div class="legend"><span><i class="sw" style="border-color:#a8321e"></i>\(\zeta(s)\) for real \(s\)</span><span><i class="dot" style="background:#0f6e56"></i>Trivial zeros \(s=-2n\)</span></div>
+  <div class="plot"><canvas id="cTriv" role="img" aria-label="Zeta of s for real negative s, oscillating and crossing zero at every negative even integer, with swings growing quickly further left."></canvas></div>
+  <figcaption class="cap"><b>Figure 4. The zeta function on the real axis, crossing zero at every negative even integer.</b> The swings grow enormously as you move left (\(\zeta(-21)\approx -281\), \(\zeta(-39)\) is in the trillions), so the vertical axis uses a <i>symmetric log scale</i>: each tick is ten times the previous, on both sides of zero. Drag the slider to reveal more of the negative axis; every green dot is a zero. Hover to read the actual value of \(\zeta(s)\).</figcaption>
+</figure>
+</div>
+</details>
+
+<!-- STEP 6 -->
+<details class="step" id="s6" open>
+<summary><span class="num">Step 6</span><h2>The non-trivial zeros</h2><span class="chev" aria-hidden="true">▶</span></summary>
+<div class="body">
+<p>All the other zeros, the <b class="r">non-trivial zeros</b>, are much more mysterious. Riemann proved they all lie in the <b>critical strip</b> \(0<\operatorname{Re}(s)<1\). Because of the mirror symmetry, and because \(\zeta(\bar s)=\overline{\zeta(s)}\), they come in sets that are symmetric across both the real axis and the line \(\operatorname{Re}(s)=\tfrac12\). The first few, written \(\rho = \tfrac12 + i\gamma\), are:</p>
+<div class="eq">\[ \begin{gathered} \gamma_1 = 14.1347\ldots,\quad \gamma_2 = 21.0220\ldots,\quad \gamma_3 = 25.0109\ldots,\\ \gamma_4 = 30.4249\ldots,\quad \gamma_5 = 32.9351\ldots,\quad \gamma_6 = 37.5862\ldots \end{gathered} \]</div>
+
+<div class="static">
+<svg viewBox="0 0 480 380" role="img" aria-labelledby="mapT mapD">
+<title id="mapT">The zeros of the zeta function in the complex plane</title>
+<desc id="mapD">Trivial zeros sit at minus 2, minus 4 and minus 6 on the real axis. The critical strip between real part 0 and 1 is shaded, and the non-trivial zeros at heights plus and minus 14.13, 21.02, 25.01, 30.42 and 32.94 all lie on the critical line, real part one half.</desc>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#111"/></marker>
+<marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#a8321e"/></marker></defs>
+<rect x="230" y="18" width="130" height="344" fill="#f6efe8"/>
+<line x1="20" y1="190" x2="420" y2="190" stroke="#111" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="230" y1="372" x2="230" y2="8" stroke="#111" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="400" y="180">Re(s)</text><text x="238" y="14">Im(s)</text>
+<line x1="295" y1="18" x2="295" y2="362" stroke="#a8321e" stroke-width="2.5"/>
+<g stroke="#111"><line x1="225" x2="235" y1="140" y2="140"/><line x1="225" x2="235" y1="90" y2="90"/><line x1="225" x2="235" y1="40" y2="40"/><line x1="225" x2="235" y1="240" y2="240"/><line x1="225" x2="235" y1="290" y2="290"/><line x1="225" x2="235" y1="340" y2="340"/><line x1="360" x2="360" y1="185" y2="195"/></g>
+<g text-anchor="end"><text x="221" y="144">10</text><text x="221" y="94">20</text><text x="221" y="44">30</text><text x="221" y="244">−10</text><text x="221" y="294">−20</text><text x="221" y="344">−30</text></g>
+<g text-anchor="middle"><text x="50" y="210">−6</text><text x="110" y="210">−4</text><text x="170" y="210">−2</text><text x="222" y="208">0</text><text x="366" y="208">1</text></g>
+<g fill="#0f6e56"><circle cx="50" cy="190" r="5.5"/><circle cx="110" cy="190" r="5.5"/><circle cx="170" cy="190" r="5.5"/></g>
+<text x="40" y="150" style="fill:#0f6e56">trivial zeros</text>
+<line x1="88" y1="156" x2="108" y2="180" stroke="#0f6e56" stroke-width="1.2"/>
+<g fill="#a8321e"><circle cx="295" cy="119.3" r="5"/><circle cx="295" cy="84.9" r="5"/><circle cx="295" cy="65" r="5"/><circle cx="295" cy="37.9" r="5"/><circle cx="295" cy="25.3" r="5"/><circle cx="295" cy="260.7" r="5"/><circle cx="295" cy="295.1" r="5"/><circle cx="295" cy="315" r="5"/><circle cx="295" cy="342.1" r="5"/><circle cx="295" cy="354.7" r="5"/></g>
+<g style="font-size:12px"><text x="304" y="123">14.13</text><text x="304" y="89">21.02</text><text x="304" y="69">25.01</text><text x="304" y="42">30.42</text><text x="304" y="29">32.94</text></g>
+<text x="372" y="96" style="fill:#a8321e">Re(s) = ½</text><text x="372" y="113" style="fill:#a8321e;font-size:12px">critical line</text>
+<path d="M370 102 Q 340 100 302 110" fill="none" stroke="#a8321e" stroke-width="1.1" marker-end="url(#ahr)"/>
+<text x="372" y="262" style="font-size:12px">critical strip</text><text x="372" y="278" style="font-size:12px">0 &lt; Re(s) &lt; 1</text>
+</svg>
+</div>
+<p class="small" style="text-align:center;margin-top:-.4rem">Figure 5. Map of the zeros (not to scale left of 0). Trivial zeros in green, non-trivial zeros in red on the critical line.</p>
+
+<h3>Evaluate \(\zeta(s)\) yourself</h3>
+<p>Try the examples. Notice that moving off the line by even 0.2 makes the value clearly non-zero.</p>
+<div class="calc">
+  <form id="zForm" class="row" novalidate>
+    <label>Real part \(\sigma\)<input type="number" id="zS" step="any" value="0.5" required></label>
+    <label>Imaginary part \(t\)<input type="number" id="zTi" step="any" value="14.134725" required></label>
+    <button type="submit">Compute \(\zeta(\sigma+it)\)</button>
+  </form>
+  <div class="err" id="zErr" role="alert"></div>
+  <div class="out" id="zOut" aria-live="polite"></div>
+  <div class="chips">
+    <button data-s="0.5" data-t="14.134725">½ + 14.1347i (1st zero)</button>
+    <button data-s="0.5" data-t="21.022040">½ + 21.0220i (2nd zero)</button>
+    <button data-s="0.3" data-t="14.134725">0.3 + 14.1347i (off the line)</button>
+    <button data-s="0.5" data-t="10">½ + 10i (on the line, not a zero)</button>
+    <button data-s="2" data-t="0">s = 2 (π²/6)</button>
+  </div>
+</div>
+
+<h3>Watching zeros pass by on the critical line</h3>
+<p>On the critical line, \(\zeta(\tfrac12+it)\) is complex, but Riemann (in notes decoded by Siegel in 1932) found how to rotate it into a <b>real</b> function, \(Z(t)=e^{i\theta(t)}\zeta(\tfrac12+it)\), with \(|Z(t)|=|\zeta(\tfrac12+it)|\). Each time \(Z\) changes sign, it passes through a zero that lies <b>exactly</b> on the line. This is how computers check the hypothesis.</p>
+<figure class="chart">
+  <div class="ctrl"><label for="zT">Height \(t\) up to</label><input type="range" id="zT" min="20" max="100" step="1" value="50"><output id="zTo">50</output></div>
+  <div class="tiles">
+    <div class="tile"><div class="k">Sign changes found</div><div class="v r" id="zT1">–</div></div>
+    <div class="tile"><div class="k">Riemann's predicted count \(N(T)\)</div><div class="v" id="zT2">–</div></div>
+    <div class="tile"><div class="k">Zeros off the line</div><div class="v">0</div></div>
+  </div>
+  <div class="legend"><span><i class="sw" style="border-color:#2a5fa8"></i>\(Z(t)\), real, with \(|Z(t)|=|\zeta(\tfrac12+it)|\)</span><span><i class="dot" style="background:#a8321e"></i>Known zeros (Odlyzko's tables)</span></div>
+  <div class="plot"><canvas id="cZ" role="img" aria-label="The Riemann–Siegel Z function oscillating and crossing zero at each known zeta zero up to height 100."></canvas></div>
+  <figcaption class="cap"><b>Figure 6. The Riemann–Siegel \(Z\) function.</b> Every crossing of the horizontal axis is a non-trivial zero on the line \(\operatorname{Re}(s)=\tfrac12\); red dots are the published values. Drag the slider to climb higher: the zeros come more and more often, matching Riemann's own counting formula \(N(T)\approx\frac{T}{2\pi}\ln\frac{T}{2\pi}-\frac{T}{2\pi}+\frac78\). Hover a dot to read the zero.</figcaption>
+</figure>
+</div>
+</details>
+
+<!-- STEP 7 -->
+<details class="step" id="s7" open>
+<summary><span class="num">Step 7</span><h2>The hypothesis and its mirror</h2><span class="chev" aria-hidden="true">▶</span></summary>
+<div class="body">
+<p>In his paper Riemann wrote, almost in passing, that it is <i>very probable</i> that all these zeros lie on the line. He tried briefly to prove it and moved on. That remark is the <b class="r">Riemann Hypothesis</b>:</p>
+<div class="claim"><div class="eq">\[ \zeta(\rho)=0 \ \text{ and }\ 0<\operatorname{Re}(\rho)<1 \quad\Longrightarrow\quad \operatorname{Re}(\rho)=\tfrac12 . \]</div></div>
+<p><b>Why ½?</b> The functional equation pairs every point \(s\) with its mirror \(1-s\). If a zero sat at \(\sigma+it\) with \(\sigma\neq\tfrac12\), its mirror \(1-\sigma-it\) would be a zero too: zeros off the line always come in <b>pairs</b>, one on each side. The hypothesis says that never happens. Every zero sits on the mirror itself.</p>
+<p>The chart below lets you move \(s\) off the line. Its mirror point \(1-s\) moves the opposite way.</p>
+<figure class="chart">
+  <div class="ctrl"><label for="mS">\(\sigma=\operatorname{Re}(s)\)</label><input type="range" id="mS" min="0.05" max="0.95" step="0.01" value="0.25"><output id="mSo">0.25</output><button id="mHalf">Snap to σ = ½</button></div>
+  <svg class="numline" viewBox="0 0 520 54" role="img" aria-label="Number line from 0 to 1 showing the position of sigma, one half, and one minus sigma">
+    <line x1="20" y1="30" x2="500" y2="30" stroke="#999"/>
+    <line x1="20" y1="24" x2="20" y2="36" stroke="#999"/><line x1="500" y1="24" x2="500" y2="36" stroke="#999"/>
+    <text x="20" y="50" text-anchor="middle" style="font-size:12px;fill:#555">0</text><text x="500" y="50" text-anchor="middle" style="font-size:12px;fill:#555">1</text>
+    <line x1="260" y1="12" x2="260" y2="40" stroke="#888" stroke-dasharray="3 3"/><text x="260" y="50" text-anchor="middle" style="font-size:12px;fill:#555">½</text>
+    <g id="nlA"><circle cx="140" cy="30" r="6" fill="#2a5fa8"/><text x="140" y="16" text-anchor="middle" style="font-size:12px;fill:#2a5fa8">s</text></g>
+    <g id="nlB"><circle cx="380" cy="30" r="6" fill="#fff" stroke="#a8321e" stroke-width="2"/><text x="380" y="16" text-anchor="middle" style="font-size:12px;fill:#a8321e">1 − s</text></g>
+  </svg>
+  <div class="tiles">
+    <div class="tile"><div class="k">Smallest \(|\zeta(s)|\), left line</div><div class="v bl" id="mT1">–</div></div>
+    <div class="tile"><div class="k">Smallest \(|\zeta(1-s)|\), right line</div><div class="v r" id="mT2">–</div></div>
+    <div class="tile"><div class="k">Zeros touched, \(t\le 50\)</div><div class="v" id="mT3">–</div></div>
+  </div>
+  <div class="legend"><span><i class="sw" style="border-color:#2a5fa8"></i>\(|\zeta(s)|\), \(s=\sigma+it\)</span><span><i class="sw dash" style="border-color:#a8321e"></i>\(|\zeta(1-s)|\), the mirror point</span><span><i class="dot" style="background:#0f6e56"></i>Zeros on \(\operatorname{Re}(s)=\tfrac12\)</span></div>
+  <div class="plot"><canvas id="cMod" role="img" aria-label="Sizes of zeta at s and at its mirror 1 minus s as t runs from 0 to 50; they only coincide and touch zero when sigma is one half."></canvas></div>
+  <figcaption class="cap"><b>Figure 7. \(\zeta(s)\) and its mirror \(\zeta(1-s)\).</b> With \(\sigma\neq\tfrac12\) the two curves differ in height and neither reaches zero (see the tiles). Press <i>Snap to σ = ½</i>: the two points meet on the critical line, the curves merge, and both touch zero at all ten zeros below \(t=50\). A counterexample to the hypothesis would be a place where both curves dip to zero while \(\sigma\neq\tfrac12\).</figcaption>
+</figure>
+</div>
+</details>
+
+<!-- STEP 8 -->
+<details class="step" id="s8" open>
+<summary><span class="num">Step 8</span><h2>Why zeros control the primes</h2><span class="chev" aria-hidden="true">▶</span></summary>
+<div class="body">
+<p>Riemann's real achievement was an <b>exact formula</b> for counting primes in terms of the zeros. In its cleanest form (proved by von Mangoldt), with \(\psi(x)\) a weighted prime count:</p>
+<div class="eq">\[ \psi(x) \;=\; x \;-\; \sum_{\rho}\frac{x^{\rho}}{\rho} \;-\; \ln 2\pi \;-\; \tfrac12\ln\!\left(1-x^{-2}\right). \]</div>
+<p>Read it like music. The main term \(x\) is the smooth trend Gauss saw. Each non-trivial zero \(\rho\) adds a <b class="bl">wave</b> on top, and the waves together build the staircase of primes. A wave's height is \(|x^\rho| = x^{\operatorname{Re}\rho}\). If every zero has \(\operatorname{Re}\rho=\tfrac12\), every wave grows only like \(\sqrt{x}\), the smallest possible, and the primes are as evenly spread as they could be. A zero further right would make one wave grow faster and the primes lumpier.</p>
+<p>Helge von Koch (1901) and Lowell Schoenfeld (1976) made this exact: the hypothesis is <b>equivalent</b> to</p>
+<div class="eq">\[ \big|\pi(x)-\operatorname{li}(x)\big| \;<\; \frac{\sqrt{x}\,\ln x}{8\pi}\qquad\text{for all } x\ge 2657. \]</div>
+<figure class="chart">
+  <div class="ctrl"><label for="rN">Check up to</label><input type="range" id="rN" min="3000" max="100000" step="1000" value="100000"><output id="rNo">100,000</output></div>
+  <div class="tiles">
+    <div class="tile"><div class="k">\(\operatorname{li}(N)-\pi(N)\)</div><div class="v t" id="rT1">–</div></div>
+    <div class="tile"><div class="k">Allowed by the hypothesis</div><div class="v" id="rT2">–</div></div>
+    <div class="tile"><div class="k">Peak error ÷ allowed (\(x\ge 2657\))</div><div class="v r" id="rT3">–</div></div>
+  </div>
+  <div class="legend"><span><i class="sw" style="border-color:#0f6e56"></i>Error \(\operatorname{li}(x)-\pi(x)\)</span><span><i class="sw dash" style="border-color:#8a8780"></i>Hypothesis band \(\pm\sqrt{x}\ln x/8\pi\)</span></div>
+  <div class="plot"><canvas id="cErr" role="img" aria-label="The error li of x minus pi of x stays well inside the band allowed by the Riemann Hypothesis up to 100,000."></canvas></div>
+  <figcaption class="cap"><b>Figure 8. The error in Gauss's estimate, against the limit the hypothesis allows.</b> The green curve is how far \(\operatorname{li}(x)\) is from the true prime count. If the Riemann Hypothesis is true it stays inside the grey band forever; if it is false, it eventually escapes. The last tile shows how much of the band is used (below 1 means inside). Checking a finite range can never prove the statement, which is why a proof is needed.</figcaption>
+</figure>
+</div>
+</details>
+
+<!-- STEP 9 -->
+<details class="step" id="s9" open>
+<summary><span class="num">Step 9</span><h2>From Hilbert to a million dollars</h2><span class="chev" aria-hidden="true">▶</span></summary>
+<div class="body">
+<p>In 1900 David Hilbert put the hypothesis on his list of 23 problems for the new century; he is said to have remarked that if he woke after a thousand years, his first question would be whether it had been proved. A century later, in 2000, the <b>Clay Mathematics Institute</b> made it one of seven <b class="r">Millennium Prize Problems</b>, offering one million US dollars for a proof. Click any event to read more.</p>
+<ol class="timeline" id="timeline"></ol>
+<p class="small"><span class="dot" style="background:#a8321e"></span> milestone &nbsp; <span class="dot" style="background:#2a5fa8"></span> AI-assisted result &nbsp; <span class="dot" style="border:2px solid #a8321e;width:10px;height:10px"></span> claim under review</p>
+</div>
+</details>
+
+<!-- STEP 10 -->
+<details class="step" id="s10" open>
+<summary><span class="num">Step 10</span><h2>Where things stand today</h2><span class="chev" aria-hidden="true">▶</span></summary>
+<div class="body">
+<p><b>What is certain.</b> Trillions of zeros have been computed and every one lies on the critical line. It is proved that infinitely many lie on it, and that a positive proportion do; in August 2026 an AI-assisted result raised that proportion above <b>two-thirds</b>. The prime number theorem is proved, and the hypothesis is known to be equivalent to dozens of other statements about primes and arithmetic.</p>
+<p><b>What is new.</b> On 20 November 2026, Anthropic mathematician <b>Levent Alpöge</b> released a large formal proof, written with Claude in the Lean proof assistant, that claims to prove the Riemann Hypothesis and its generalisation to Dirichlet \(L\)-functions. Independent mathematicians report that the code compiles using only the standard axioms. Experts are still checking that the formal statement truly matches the hypothesis, and no human-readable written proof has been published yet. <b class="r">As of 21 November 2026, the claim is under review.</b> The Clay Institute's rules require publication and a waiting period before any prize.</p>
+<p><b>Why it matters.</b> Hundreds of published theorems begin “assuming the Riemann Hypothesis…”. A proof would turn them all into facts: sharp bounds on gaps between primes, the error in counting primes, and the speed of algorithms such as the Miller primality test (under the generalised hypothesis). It would <i>not</i> break internet encryption: RSA relies on the difficulty of factoring, which the hypothesis does not address.</p>
+<h3>Glossary</h3>
+<table class="vals">
+  <tbody>
+    <tr><td>\(\pi(x)\)</td><td>number of primes \(\le x\)</td></tr>
+    <tr><td>\(\zeta(s)\)</td><td>Riemann zeta function, \(\sum n^{-s}\) extended to the whole plane</td></tr>
+    <tr><td>critical strip</td><td>the region \(0<\operatorname{Re}(s)<1\), where all non-trivial zeros live</td></tr>
+    <tr><td>critical line</td><td>\(\operatorname{Re}(s)=\tfrac12\), the mirror line of the functional equation</td></tr>
+    <tr><td>trivial zeros</td><td>\(s=-2,-4,-6,\dots\), forced by \(\sin(\pi s/2)\)</td></tr>
+    <tr><td>\(\operatorname{li}(x)\)</td><td>logarithmic integral \(\int_0^x dt/\ln t\), the best simple estimate of \(\pi(x)\)</td></tr>
+  </tbody>
+</table>
+</div>
+</details>
+
+<footer>
+  <p><b>Further reading.</b></p>
+  <ol>
+    <li>B. Riemann, <i>Ueber die Anzahl der Primzahlen unter einer gegebenen Grösse</i>, Monatsberichte der Berliner Akademie, 1859.</li>
+    <li>E. Bombieri, <i>The Riemann Hypothesis</i>, official problem description, <a href="https://www.claymath.org/millennium/riemann-hypothesis/">Clay Mathematics Institute</a>.</li>
+    <li>J. Derbyshire, <i>Prime Obsession</i> (2003); M. du Sautoy, <i>The Music of the Primes</i> (2003).</li>
+    <li>B. Mazur &amp; W. Stein, <i>Prime Numbers and the Riemann Hypothesis</i>, Cambridge University Press (2016).</li>
+    <li>H. M. Edwards, <i>Riemann's Zeta Function</i>, Academic Press (1974).</li>
+    <li>A. Odlyzko, <a href="https://www-users.cse.umn.edu/~odlyzko/zeta_tables/">tables of zeros of the zeta function</a>.</li>
+    <li>2026 news: <a href="https://www.scientificamerican.com/article/anthropic-mathematician-claims-to-prove-riemann-hypothesis-most-famous-problem-in-all-of-math/">Scientific American on the November claim</a>; <a href="https://www.scientificamerican.com/article/the-ai-riemann-hypothesis-proof-is-almost-certainly-true-independent-mathematicians-attest/">follow-up on independent checks</a>; <a href="https://github.com/Tomodovodoo/Riemann">mirror of the Lean archive</a>; <a href="https://www.nacionale.com/en/articles/has-ai-made-progress-riemann-hypothesis-before-claude-august-openai-quasi-riemann-october">overview of the August 2026 two-thirds result</a>.</li>
+  </ol>
+  <p>Charts are computed live in your browser: primes by the sieve of Eratosthenes, \(\zeta(s)\) by Borwein's accelerated alternating series and the functional equation, and \(Z(t)\) by the Riemann–Siegel formula. Portrait: public domain.</p>
+  <p>Last updated 21 November 2026 · Courtesy: <a href="https://rahmanziaur.github.io">rahmanziaur.github.io</a></p>
+</footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false});
+
+const $=id=>document.getElementById(id);
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const RUST='#a8321e',TEAL='#0f6e56',BLUE='#2a5fa8',GRAY='#8a8780',GRID='#ece9e3';
+const FONT="KaTeX_Main, 'Latin Modern Roman', Georgia, serif";
+Chart.defaults.font.family=FONT;Chart.defaults.font.size=13;Chart.defaults.color='#555';
+const base={responsive:true,maintainAspectRatio:false,animation:false};
+const xAx=(text,o={})=>({type:'linear',title:{display:true,text},grid:{display:false},border:{color:'#bbb'},...o});
+const yAx=(text,o={})=>({title:{display:true,text},grid:{color:GRID},border:{display:false},...o});
+const logTicks={autoSkip:false,callback:v=>{const l=Math.log10(v);return Math.abs(l-Math.round(l))<1e-9?fmt(v):''}};
+const charts=[];
+
+/* ---------- number theory ---------- */
+const MAX=100000,sv=new Uint8Array(MAX+200).fill(1);sv[0]=sv[1]=0;
+for(let i=2;i*i<sv.length;i++)if(sv[i])for(let j=i*i;j<sv.length;j+=i)sv[j]=0;
+const primes=[];for(let i=2;i<sv.length;i++)if(sv[i])primes.push(i);
+const piArr=new Uint32Array(MAX+1);for(let i=1;i<=MAX;i++)piArr[i]=piArr[i-1]+sv[i];
+function li(x){const L=Math.log(x);let s=0,term=1;for(let n=1;n<150;n++){term*=L/n;s+=term/n;}return 0.5772156649015329+Math.log(L)+s;}
+
+/* ---------- zeta ---------- */
+const NB=60,dB=[];{let term=1,sum=1;dB.push(1);for(let i=1;i<=NB;i++){term*=4*(NB+i-1)*(NB-i+1)/((2*i)*(2*i-1));sum+=term;dB.push(sum);}}
+const LNk=[];for(let k=1;k<=NB;k++)LNk.push(Math.log(k));
+function zetaC(sr,si){ // Borwein, valid for Re(s)>0, s != 1
+  let er=0,ei=0;
+  for(let k=0;k<NB;k++){const c=(k%2?-1:1)*(dB[k]-dB[NB]),m=Math.exp(-sr*LNk[k]),a=-si*LNk[k];er+=c*m*Math.cos(a);ei+=c*m*Math.sin(a);}
+  er/=-dB[NB];ei/=-dB[NB];
+  const m2=Math.exp((1-sr)*Math.LN2),a2=-si*Math.LN2,dr=1-m2*Math.cos(a2),di=-m2*Math.sin(a2),den=dr*dr+di*di;
+  return [(er*dr+ei*di)/den,(ei*dr-er*di)/den];
+}
+const LG=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+function gamma(x){if(x<0.5)return Math.PI/(Math.sin(Math.PI*x)*gamma(1-x));x-=1;let a=LG[0];const t=x+7.5;for(let i=1;i<9;i++)a+=LG[i]/(x+i);return Math.sqrt(2*Math.PI)*Math.pow(t,x+0.5)*Math.exp(-t)*a;}
+function zetaR(s){
+  if(Math.abs(s)<1e-9)return -0.5;
+  if(s>0)return zetaC(s,0)[0];
+  const n=Math.round(s);if(n===s&&n%2===0)return 0;
+  return Math.pow(2,s)*Math.pow(Math.PI,s-1)*Math.sin(Math.PI*s/2)*gamma(1-s)*zetaC(1-s,0)[0];
+}
+const absC=([r,i])=>Math.hypot(r,i);
+const ZEROS=[14.134725,21.022040,25.010858,30.424876,32.935062,37.586178,40.918719,43.327073,48.005151,49.773832,52.970321,56.446248,59.347044,60.831779,65.112544,67.079811,69.546402,72.067158,75.704691,77.144840,79.337375,82.910381,84.735493,87.425275,88.809111,92.491899,94.651344,95.870634,98.831194];
+function theta(t){return t/2*Math.log(t/(2*Math.PI))-t/2-Math.PI/8+1/(48*t)+7/(5760*t*t*t);}
+function Zrs(t){const a=Math.sqrt(t/(2*Math.PI)),N=Math.floor(a),p=a-N,th=theta(t);let s=0;
+  for(let n=1;n<=N;n++)s+=Math.cos(th-t*Math.log(n))/Math.sqrt(n);
+  return 2*s+(N%2?1:-1)*Math.pow(t/(2*Math.PI),-0.25)*Math.cos(2*Math.PI*(p*p-p-1/16))/Math.cos(2*Math.PI*p);}
+
+/* self-checks */
+console.assert(piArr[100]===25&&piArr[100000]===9592,'pi(x)');
+console.assert(Math.abs(li(100000)-9629.81)<0.1,'li');
+console.assert(Math.abs(zetaR(2)-Math.PI*Math.PI/6)<1e-9,'zeta(2)');
+console.assert(Math.abs(zetaR(-1)+1/12)<1e-9&&Math.abs(zetaR(-3)-1/120)<1e-9,'zeta negative');
+console.assert(absC(zetaC(0.5,14.134725))<1e-4,'first zero');
+
+/* ---------- Figure 1: gaps ---------- */
+const cGaps=new Chart($('cGaps'),{type:'scatter',
+  data:{datasets:[{data:[],backgroundColor:'rgba(168,50,30,.55)',pointRadius:2,pointHoverRadius:5,pointHitRadius:5},
+    {type:'line',data:[],borderColor:GRAY,borderDash:[5,4],borderWidth:2,pointRadius:0}]},
+  options:{...base,plugins:{legend:{display:false},tooltip:{filter:i=>i.datasetIndex===0,callbacks:{label:i=>`p = ${fmt(i.raw.x)}, next prime ${fmt(i.raw.x+i.raw.y)}, gap ${i.raw.y}`}}},
+    scales:{x:xAx('Prime p',{min:0,ticks:{callback:fmt}}),y:yAx('Gap to the next prime',{min:0})}}});
+charts.push(cGaps);
+function drawGaps(){
+  const N=+$('gN').value,pts=[];let twins=0,mg=0,mp=0;
+  for(let k=0;primes[k]<=N;k++){const g=primes[k+1]-primes[k];pts.push({x:primes[k],y:g});if(g===2)twins++;if(g>mg){mg=g;mp=primes[k];}}
+  const ln=[];for(let i=0;i<=100;i++){const x=3+(N-3)*i/100;ln.push({x,y:Math.log(x)});}
+  cGaps.data.datasets[0].data=pts;cGaps.data.datasets[1].data=ln;
+  cGaps.options.scales.x.max=N;cGaps.options.scales.y.max=Math.ceil(mg*1.1);cGaps.update();
+  $('gNo').textContent=fmt(N);$('gT1').textContent=fmt(pts.length);$('gT2').textContent=fmt(twins);$('gT3').textContent=`${mg} (after ${fmt(mp)})`;
+}
+$('gN').addEventListener('input',drawGaps);drawGaps();
+
+/* ---------- Figure 2: pi(x) ---------- */
+const piLabels={id:'piLabels',afterDatasetsDraw(ch){const m=ch.getDatasetMeta(3),ctx=ch.ctx;ctx.save();ctx.font=`12px ${FONT}`;ctx.fillStyle='#333';ctx.textAlign='right';
+  m.data.forEach((pt,k)=>{const d=ch.data.datasets[3].data[k];ctx.fillText(`π(${fmt(d.x)}) = ${fmt(d.y)}`,pt.x-8,pt.y-9);});ctx.restore();}};
+const cPi=new Chart($('cPi'),{type:'line',plugins:[piLabels],
+  data:{datasets:[
+    {data:[],borderColor:RUST,borderWidth:2,stepped:true,pointRadius:0},
+    {data:[],borderColor:TEAL,borderWidth:2,borderDash:[6,4],pointRadius:0},
+    {data:[],borderColor:BLUE,borderWidth:2,borderDash:[2,3],pointRadius:0},
+    {type:'scatter',data:[],backgroundColor:RUST,borderColor:'#fff',borderWidth:2,pointRadius:5,pointHoverRadius:7}]},
+  options:{...base,interaction:{mode:'nearest',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{
+    title:i=>`x = ${fmt(i[0].raw.x)}`,label:i=>['π(x)','x / ln x','li(x)','π(x)'][i.datasetIndex]+' = '+fmt(i.raw.y)}}},
+    scales:{x:xAx('Upper bound x'),y:yAx('Count of primes',{min:0,ticks:{callback:fmt}})}}});
+charts.push(cPi);
+function drawPi(){
+  const N=+$('pN').value,log=$('pLog').checked,xs=[];
+  for(let i=0;i<=240;i++)xs.push(log?2*Math.pow(N/2,i/240):2+(N-2)*i/240);
+  const steps=[{x:2,y:1}];for(let k=1;primes[k]<=N;k++)steps.push({x:primes[k],y:k+1});steps.push({x:N,y:piArr[N]});
+  cPi.data.datasets[0].data=steps;
+  cPi.data.datasets[1].data=xs.filter(x=>x>=3).map(x=>({x,y:x/Math.log(x)}));
+  cPi.data.datasets[2].data=xs.filter(x=>x>=2).map(x=>({x,y:li(x)}));
+  cPi.data.datasets[3].data=[10,100,1000,10000,100000].filter(x=>x<=N).map(x=>({x,y:piArr[x]}));
+  const sx=cPi.options.scales.x;sx.type=log?'logarithmic':'linear';sx.min=2;sx.max=N;sx.ticks=log?logTicks:{callback:fmt};
+  sx.title.text=log?'Upper bound x (log scale)':'Upper bound x';
+  cPi.options.scales.y.max=Math.ceil(li(N)*1.1);cPi.update();
+  $('pNo').textContent=fmt(N);$('pT1').textContent=fmt(piArr[N]);$('pT2').textContent=fmt(N/Math.log(N));$('pT3').textContent=fmt(li(N));
+}
+$('pN').addEventListener('input',drawPi);$('pLog').addEventListener('change',drawPi);drawPi();
+
+/* ---------- Figure 3: Euler ---------- */
+const cEuler=new Chart($('cEuler'),{type:'line',
+  data:{datasets:[{data:[],borderColor:RUST,borderWidth:2,pointRadius:0},{data:[],borderColor:BLUE,borderWidth:2,stepped:true,pointRadius:0},{data:[],borderColor:GRAY,borderWidth:2,borderDash:[5,4],pointRadius:0}]},
+  options:{...base,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>`N = ${i[0].raw.x}`,label:i=>['Sum','Product','ζ(s)'][i.datasetIndex]+' = '+i.raw.y.toFixed(4)}}},
+    scales:{x:xAx('Number of terms N',{min:1,max:300}),y:yAx('Value')}}});
+charts.push(cEuler);
+function drawEuler(){
+  const s=+$('eS').value,S=[],P=[];let sum=0,prod=1;
+  for(let n=1;n<=300;n++){sum+=Math.pow(n,-s);if(sv[n])prod/=1-Math.pow(n,-s);S.push({x:n,y:sum});P.push({x:n,y:prod});}
+  const conv=s>1.0001,z=conv?zetaR(s):null;
+  cEuler.data.datasets[0].data=S;cEuler.data.datasets[1].data=P;cEuler.data.datasets[2].data=conv?[{x:1,y:z},{x:300,y:z}]:[];
+  cEuler.options.scales.y.max=conv?Math.max(z,sum,prod)+(Math.max(z,sum,prod)-1)*0.15:undefined;cEuler.update();
+  $('eSo').textContent=s.toFixed(2);$('eT1').textContent=sum.toFixed(4);$('eT2').textContent=prod.toFixed(4);
+  $('eT3').textContent=conv?z.toFixed(4):'diverges';
+}
+$('eS').addEventListener('input',drawEuler);drawEuler();
+
+/* ---------- Figure 4: trivial zeros (symmetric log) ---------- */
+const EPS=1e-3,sl=v=>Math.sign(v)*Math.log10(1+Math.abs(v)/EPS);
+const sup=n=>String(n).replace(/-/g,'⁻').replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+const cTriv=new Chart($('cTriv'),{type:'line',
+  data:{datasets:[{data:[],borderColor:RUST,borderWidth:2,pointRadius:0},{type:'scatter',data:[],backgroundColor:TEAL,borderColor:'#fff',borderWidth:2,pointRadius:6,pointHoverRadius:8}]},
+  options:{...base,interaction:{mode:'nearest',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{
+    title:i=>`s = ${i[0].raw.x.toFixed(2)}`,label:i=>i.datasetIndex===1?'trivial zero: ζ(s) = 0':'ζ(s) = '+(Math.abs(i.raw.v)>=1000||Math.abs(i.raw.v)<1e-3?i.raw.v.toExponential(3):i.raw.v.toFixed(5))}}},
+    scales:{x:xAx('s (real)'),y:yAx('ζ(s), symmetric log scale',{ticks:{stepSize:1,callback:k=>k===0?'0':(k<0?'−':'')+'10'+sup(Math.abs(k)-3)}})}}});
+charts.push(cTriv);
+function drawTriv(){
+  const L=+$('tL').value,pts=[];let mx=0;
+  for(let i=0;;i++){const s=-L+i*0.02;if(s>0.8)break;const v=zetaR(s);pts.push({x:s,y:sl(v),v});if(s<-0.5)mx=Math.max(mx,Math.abs(v));}
+  const zs=[];for(let n=2;n<=L;n+=2)zs.push({x:-n,y:0,v:0});
+  cTriv.data.datasets[0].data=pts;cTriv.data.datasets[1].data=zs;
+  cTriv.options.scales.x.min=-L;cTriv.options.scales.x.max=0.8;cTriv.update();
+  $('tLo').textContent=`−${L} to 0.8`;$('tT1').textContent=zs.length;
+  $('tT2').textContent=mx>=1e4?mx.toExponential(2):mx.toFixed(3);$('tT3').textContent=zetaR(-1).toFixed(5)+' = −1/12';
+}
+$('tL').addEventListener('input',drawTriv);drawTriv();
+
+/* ---------- Calculator ---------- */
+function runCalc(){
+  const sE=$('zS'),tE=$('zTi'),err=$('zErr'),out=$('zOut');
+  const s=parseFloat(sE.value),t=parseFloat(tE.value);
+  if(sE.value.trim()===''||tE.value.trim()===''||!isFinite(s)||!isFinite(t)){err.textContent='Enter both a real part and an imaginary part.';out.textContent='';return;}
+  if(s<=0||s>5){err.textContent='This calculator handles 0 < σ ≤ 5 (the critical strip and to its right).';out.textContent='';return;}
+  if(Math.abs(t)>60){err.textContent='Keep |t| ≤ 60 for accurate results.';out.textContent='';return;}
+  if(Math.abs(s-1)<1e-6&&Math.abs(t)<1e-6){err.textContent='s = 1 is the pole: ζ(s) is infinite there.';out.textContent='';return;}
+  err.textContent='';
+  const z=zetaC(s,t),m=absC(z),f=v=>(Math.abs(v)<5e-7?0:v).toFixed(6);
+  let html=`ζ(${s} ${t<0?'−':'+'} ${Math.abs(t)}i) = <b>${f(z[0])} ${z[1]<0?'−':'+'} ${f(Math.abs(z[1]))}i</b>, &nbsp; |ζ| = <b class="${m<1e-4?'r':''}">${m<1e-6?m.toExponential(1):m.toFixed(6)}</b>`;
+  if(m<1e-4)html+=` <span class="r">→ a zero${Math.abs(s-0.5)<1e-9?' on the critical line':''}</span>`;
+  if(s<1){const w=absC(zetaC(1-s,-t));html+=`<br><span class="small">Mirror point 1 − s = ${(1-s).toFixed(4)} ${-t<0?'−':'+'} ${Math.abs(t)}i: |ζ(1 − s)| = ${w.toFixed(6)}</span>`;}
+  out.innerHTML=html;
+}
+$('zForm').addEventListener('submit',e=>{e.preventDefault();runCalc();});
+['zS','zTi'].forEach(id=>$(id).addEventListener('input',()=>{$('zErr').textContent='';}));
+document.querySelectorAll('.chips button').forEach(b=>b.addEventListener('click',()=>{$('zS').value=b.dataset.s;$('zTi').value=b.dataset.t;runCalc();}));
+runCalc();
+
+/* ---------- Figure 6: Z(t) ---------- */
+const cZ=new Chart($('cZ'),{type:'line',
+  data:{datasets:[{data:[],borderColor:BLUE,borderWidth:2,pointRadius:0},{type:'scatter',data:[],backgroundColor:RUST,borderColor:'#fff',borderWidth:2,pointRadius:5,pointHoverRadius:7}]},
+  options:{...base,interaction:{mode:'nearest',intersect:true},plugins:{legend:{display:false},tooltip:{filter:i=>i.datasetIndex===1,callbacks:{label:i=>`zero #${ZEROS.indexOf(i.raw.x)+1}: ρ = ½ + ${i.raw.x.toFixed(6)} i`}}},
+    scales:{x:xAx('t, height on the critical line',{min:8}),y:yAx('Z(t)')}}});
+charts.push(cZ);
+function drawZ(){
+  const T=+$('zT').value,pts=[];let sc=0,prev=null;
+  for(let i=0;;i++){const t=8+i*0.04;if(t>T)break;const y=Zrs(t);pts.push({x:t,y});if(prev!==null&&Math.sign(y)!==Math.sign(prev))sc++;prev=y;}
+  cZ.data.datasets[0].data=pts;cZ.data.datasets[1].data=ZEROS.filter(z=>z<=T).map(x=>({x,y:0}));
+  cZ.options.scales.x.max=T;cZ.update();
+  const NT=T/(2*Math.PI)*Math.log(T/(2*Math.PI))-T/(2*Math.PI)+7/8;
+  $('zTo').textContent=T;$('zT1').textContent=sc;$('zT2').textContent=NT.toFixed(1);
+}
+$('zT').addEventListener('input',drawZ);drawZ();
+console.assert((()=>{let c=0,p=Zrs(8);for(let t=8.04;t<=100;t+=0.04){const y=Zrs(t);if(Math.sign(y)!==Math.sign(p))c++;p=y;}return c===ZEROS.length;})(),'Z sign changes');
+
+/* ---------- Figure 7: mirror ---------- */
+const MZ=ZEROS.filter(z=>z<50);
+const cMod=new Chart($('cMod'),{type:'line',
+  data:{datasets:[{data:[],borderColor:BLUE,borderWidth:2,pointRadius:0},{data:[],borderColor:RUST,borderWidth:2,borderDash:[6,4],pointRadius:0},
+    {type:'scatter',data:MZ.map(x=>({x,y:0})),backgroundColor:TEAL,borderColor:'#fff',borderWidth:2,pointRadius:5,pointHoverRadius:7}]},
+  options:{...base,interaction:{mode:'nearest',axis:'x',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>`t = ${i[0].raw.x.toFixed(2)}`,
+    label:i=>['|ζ(s)|','|ζ(1 − s)|','zero at ½ + '+i.raw.x.toFixed(4)+'i'][i.datasetIndex]+(i.datasetIndex<2?' = '+i.raw.y.toFixed(3):'')}}},
+    scales:{x:xAx('t = Im(s)',{min:0,max:50}),y:yAx('Size |ζ|',{min:0})}}});
+charts.push(cMod);
+const T7=[];for(let i=0;i<=2475;i++)T7.push(0.5+i*0.02);
+function drawMod(){
+  const s=+$('mS').value,a=[],b=[];let m1=Infinity,m2=Infinity;
+  for(const t of T7){const v1=absC(zetaC(s,t)),v2=absC(zetaC(1-s,-t));a.push({x:t,y:v1});b.push({x:t,y:v2});if(t>10){m1=Math.min(m1,v1);m2=Math.min(m2,v2);}}
+  cMod.data.datasets[0].data=a;cMod.data.datasets[1].data=b;cMod.update();
+  const xA=20+480*s,xB=20+480*(1-s);
+  $('nlA').setAttribute('transform',`translate(${xA-140},0)`);$('nlB').setAttribute('transform',`translate(${xB-380},0)`);
+  $('mSo').textContent=`${s.toFixed(2)} · 1 − σ = ${(1-s).toFixed(2)}`;
+  $('mT1').textContent=m1.toFixed(3);$('mT2').textContent=m2.toFixed(3);
+  $('mT3').textContent=Math.abs(s-0.5)<0.005?MZ.length:0;
+}
+$('mS').addEventListener('input',drawMod);$('mHalf').addEventListener('click',()=>{$('mS').value=0.5;drawMod();});drawMod();
+
+/* ---------- Figure 8: error band ---------- */
+const cErr=new Chart($('cErr'),{type:'line',
+  data:{datasets:[{data:[],borderColor:TEAL,borderWidth:2,pointRadius:0},{data:[],borderColor:GRAY,borderDash:[5,4],borderWidth:2,pointRadius:0,fill:'+1',backgroundColor:'rgba(138,135,128,.08)'},{data:[],borderColor:GRAY,borderDash:[5,4],borderWidth:2,pointRadius:0}]},
+  options:{...base,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>`x = ${fmt(i[0].raw.x)}`,label:i=>['li(x) − π(x)','band +','band −'][i.datasetIndex]+' = '+i.raw.y.toFixed(1)}}},
+    scales:{x:xAx('x (log scale)',{type:'logarithmic',min:10,ticks:logTicks}),y:yAx('Counting error')}}});
+charts.push(cErr);
+function drawErr(){
+  const N=+$('rN').value,e=[],u=[],l=[];let peak=0;
+  for(let i=0;i<=500;i++){const x=Math.round(10*Math.pow(N/10,i/500)),v=li(x)-piArr[x],bd=Math.sqrt(x)*Math.log(x)/(8*Math.PI);
+    e.push({x,y:v});u.push({x,y:bd});l.push({x,y:-bd});}
+  for(let x=2657;x<=N;x++){const r=Math.abs(li(x)-piArr[x])/(Math.sqrt(x)*Math.log(x)/(8*Math.PI));if(r>peak)peak=r;if(x>20000)x+=6;}
+  cErr.data.datasets[0].data=e;cErr.data.datasets[1].data=u;cErr.data.datasets[2].data=l;cErr.options.scales.x.max=N;cErr.update();
+  $('rNo').textContent=fmt(N);$('rT1').textContent=(li(N)-piArr[N]).toFixed(1);
+  $('rT2').textContent='± '+(Math.sqrt(N)*Math.log(N)/(8*Math.PI)).toFixed(1);$('rT3').textContent=peak.toFixed(2);
+}
+$('rN').addEventListener('input',drawErr);drawErr();
+
+/* ---------- Timeline ---------- */
+const EVENTS=[
+ ['c. 300 BC','Euclid proves there are infinitely many primes','In the <i>Elements</i>, Book IX: multiply any finite list of primes, add 1, and the result has a prime factor not on the list.'],
+ ['1737','Euler finds the product formula','Euler shows that the sum of 1/n<sup>s</sup> equals a product over all primes. This first links the zeta function to the primes.'],
+ ['1792','Gauss guesses the density of primes','As a teenager, Gauss notices that primes near x occur with density about 1/ln x, the first form of the Prime Number Theorem.'],
+ ['1859','Riemann states the hypothesis','In an 8-page paper for the Berlin Academy, Riemann extends ζ to complex numbers, proves the functional equation, gives an exact formula for primes in terms of the zeros, and remarks that all non-trivial zeros very probably have real part ½.'],
+ ['1896','Prime Number Theorem proved','Hadamard and de la Vallée Poussin independently prove π(x) ~ x/ln x, by showing that ζ has no zeros on the line Re(s) = 1, the edge of the critical strip.'],
+ ['1900','Hilbert lists it as problem 8','At the International Congress of Mathematicians in Paris, Hilbert includes the Riemann Hypothesis in his famous list of 23 problems for the twentieth century.'],
+ ['1914','Hardy: infinitely many zeros on the line','G. H. Hardy proves that infinitely many non-trivial zeros lie on the critical line, though not yet a positive fraction of them.'],
+ ['1932','Siegel decodes Riemann\'s notes','Carl Ludwig Siegel finds in Riemann\'s unpublished papers a powerful method for computing ζ on the critical line, now the Riemann–Siegel formula used in every large computation.'],
+ ['1942','Selberg: a positive proportion','Atle Selberg proves that a positive fraction of all zeros lie on the line; he later received the Fields Medal partly for this work.'],
+ ['1972','Montgomery meets Dyson','Over tea at Princeton, Hugh Montgomery learns from physicist Freeman Dyson that the spacing of zeta zeros matches the energy levels of random quantum systems, a link that still guides research.'],
+ ['1974','Levinson: at least one-third','Norman Levinson proves that more than one-third of the zeros lie on the critical line.'],
+ ['1989','Conrey: at least two-fifths','Brian Conrey raises the proportion to more than 40%. Later refinements pushed it to about 41.7%.'],
+ ['2000','Clay offers one million dollars','The Clay Mathematics Institute names the Riemann Hypothesis one of seven Millennium Prize Problems, each carrying a one-million-dollar prize.'],
+ ['2004','10 trillion zeros checked','Gourdon and Demichel compute the first 10<sup>13</sup> non-trivial zeros; every one lies on the critical line.'],
+ ['2018','Atiyah\'s claimed proof','Sir Michael Atiyah presents a short claimed proof; it is not accepted by the mathematical community.'],
+ ['2021','Rigorous check to height 3·10¹²','Platt and Trudgian rigorously verify that all zeros up to height 3·10<sup>12</sup> lie on the line.'],
+ ['2024','Guth–Maynard breakthrough','Larry Guth and James Maynard improve the 1940 Ingham bound on how many zeros could lie off the line, the first major progress on that question in over 80 years.'],
+ ['Aug 2026','AI-assisted result: more than two-thirds on the line','Anthropic reports that a research version of Claude proved that more than two-thirds of the non-trivial zeros lie on the critical line (up from about 41.7%), with the argument condensed by mathematicians and formalised in Lean. A bound, not a proof of the hypothesis.','ai'],
+ ['20 Nov 2026','Alpöge claims a full proof in Lean','Levent Alpöge (Anthropic) releases a Lean formalisation, written with Claude, claiming a proof of the Riemann Hypothesis and of the generalised hypothesis for Dirichlet L-functions. Independent mathematicians report that it compiles with only the standard axioms; checking that the formal statement matches the hypothesis, and a readable written proof, are still pending.','claimed']
+];
+const tl=$('timeline');
+EVENTS.forEach(([y,title,more,kind],k)=>{
+  const li=document.createElement('li');if(kind)li.className=kind;
+  const badge=kind==='claimed'?'<span class="badge rev">under review</span>':kind==='ai'?'<span class="badge ai">AI-assisted</span>':'';
+  li.innerHTML=`<div class="yr">${y}</div><div class="mk" aria-hidden="true"></div><div><button class="ev" aria-expanded="false" aria-controls="ev${k}">${title}${badge}</button><div class="more" id="ev${k}" hidden>${more}</div></div>`;
+  tl.appendChild(li);
+});
+tl.addEventListener('click',e=>{const b=e.target.closest('button.ev');if(!b)return;const d=$(b.getAttribute('aria-controls'));const open=d.hidden;d.hidden=!open;b.setAttribute('aria-expanded',String(open));});
+
+/* ---------- collapse / expand ---------- */
+const steps=[...document.querySelectorAll('details.step')];
+$('expandAll').onclick=()=>steps.forEach(d=>d.open=true);
+$('collapseAll').onclick=()=>steps.forEach(d=>d.open=false);
+document.querySelectorAll('nav.toc a').forEach(a=>a.addEventListener('click',()=>{const d=document.querySelector(a.getAttribute('href'));if(d)d.open=true;}));
+steps.forEach(d=>d.addEventListener('toggle',()=>{if(d.open)charts.forEach(c=>c.resize());}));
+document.fonts&&document.fonts.ready.then(()=>charts.forEach(c=>c.update()));
+</script>
+</body>
+</html>
